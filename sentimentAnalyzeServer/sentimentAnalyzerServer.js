@@ -25,30 +25,38 @@ const naturalLanguageUnderstanding = getLanguageTranslator();
 
 // Helper function for Emotion analysis
 function getEmotion(analyzeParams) {
-  let results;
-  naturalLanguageUnderstanding.analyze(analyzeParams)
-  .then(analysisResults => {
-    results = analysisResults.result.emotion.document.emotion;
-    console.log(JSON.stringify(results, null, 2));
-  })
-  .catch(err => {
-    console.log('error:', err);
+  let promise = new Promise((resolve,reject) => {
+    let results;
+    naturalLanguageUnderstanding.analyze(analyzeParams)
+    .then(analysisResults => {
+      results = analysisResults.result.emotion.document.emotion;
+      console.log(JSON.stringify(results, null, 2));
+      resolve(results);
+    })
+    .catch(err => {
+      console.log('error:', err);
+      reject(err);
+    });
   });
-  return results;
+  return promise;
 }
 
 // Helper function for Sentiment analysis
 function getSentiment(analyzeParams) {
-  let results;
-  naturalLanguageUnderstanding.analyze(analyzeParams)
-  .then(analysisResults => {
-    results = analysisResults.result.sentiment.document;
-    console.log(JSON.stringify(results, null, 2));
-  })
-  .catch(err => {
-    console.log('error:', err);
+  let promise = new Promise((resolve,reject) => {
+    let results;
+    naturalLanguageUnderstanding.analyze(analyzeParams)
+    .then(analysisResults => {
+      results = analysisResults.result.sentiment.document.label;
+      console.log(JSON.stringify(results, null, 2));
+      resolve(results);
+    })
+    .catch(err => {
+      console.log('error:', err);
+      reject(err);
+    });
   });
-  return results;
+  return promise;
 }
 
 const app = new express();
@@ -72,12 +80,14 @@ app.get("/url/emotion", (req,res) => {
             'document': true,
             'limit': 5
           }
-    }
+    },
+    "language": "en"
   };
 
-  var results = getEmotion(analyzeParams);
-
-  return res.send(results);
+  getEmotion(analyzeParams).then(results => {
+    res.send(results);
+  });
+   
 });
 
 app.get("/url/sentiment", (req,res) => {
@@ -90,30 +100,32 @@ app.get("/url/sentiment", (req,res) => {
             'document': true,
             'limit': 5
           }
-    }
+    },
+    "language": "en"
   };
 
-  var results = getSentiment(analyzeParams);
-
-  return res.send(results);
+  getSentiment(analyzeParams).then(results => {
+    res.send(results);
+  });
 });
 
 app.get("/text/emotion", (req,res) => {
-    console.log("Received request: " + JSON.stringify(req.query.text));
+  console.log("Received request: " + JSON.stringify(req.query.text));
 
-    const analyzeParams = {
-        'text': req.query.text,
-        'features': {
-            'emotion': {
-                'document': true,
-                'limit': 5
-              }
-        }
-      };
+  const analyzeParams = {
+      'text': req.query.text,
+      'features': {
+          'emotion': {
+              'document': true,
+              'limit': 5
+            }
+      },
+      "language": "en"
+    };
 
-    var results = getEmotion(analyzeParams);
-
-    return res.send(results);
+    getEmotion(analyzeParams).then(results => {
+      res.send(results);
+    });
 });
 
 app.get("/text/sentiment", (req,res) => {
@@ -126,12 +138,13 @@ app.get("/text/sentiment", (req,res) => {
               'document': true,
               'limit': 5
             }
-      }
+      },
+      "language": "en"
     };
 
-  var results = getSentiment(analyzeParams);
-  console.log(JSON.stringify(results));
-  return res.send(results);
+  getSentiment(analyzeParams).then(results => {
+    res.send(results);
+  });
 });
 
 let server = app.listen(8080, () => {

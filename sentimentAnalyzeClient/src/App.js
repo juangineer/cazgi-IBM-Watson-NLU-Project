@@ -62,6 +62,8 @@ class App extends React.Component {
         output = <div style={{color:"orange",fontSize:20}}>{response.data}</div>
       }
       this.setState({sentimentOutput:output});
+    }).catch(err => {
+      console.log(err.toString())
     });
   }
 
@@ -71,7 +73,7 @@ class App extends React.Component {
     let url = ".";
 
     let textinput = document.getElementById("textinput").value;
-    console.log("Sending sentiment: " + textinput);
+    console.log("Sending emotion: " + textinput);
 
     if(this.state.mode === "url") {
       url = url+"/url/emotion?url="+textinput;
@@ -83,7 +85,9 @@ class App extends React.Component {
     ret.then((response)=>{
       console.log("Received emotion: " + JSON.stringify(response.data));
       this.setState({sentimentOutput:<EmotionTable emotions={response.data}/>});
-  });
+    }).catch(err => {
+        console.log(err.toString())
+    });
   }
   
 
