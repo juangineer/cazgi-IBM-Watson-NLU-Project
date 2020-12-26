@@ -38,15 +38,19 @@ class App extends React.Component {
     let ret = "";
     let url = ".";
 
+    let textinput = document.getElementById("textinput").value;
+    console.log("Sending sentiment: " + textinput);
+
     if(this.state.mode === "url") {
-      url = url+"/url/sentiment?url="+document.getElementById("textinput").value;
+      url = url+"/url/sentiment?url="+textinput;
     } else {
-      url = url+"/text/sentiment?text="+document.getElementById("textinput").value;
+      url = url+"/text/sentiment?text="+textinput;
     }
     ret = axios.get(url);
     ret.then((response)=>{
 
       //Include code here to check the sentiment and fomrat the data accordingly
+      console.log("Received sentiment: " + JSON.stringify(response.data));
 
       this.setState({sentimentOutput:response.data});
       let output = response.data;
@@ -65,14 +69,19 @@ class App extends React.Component {
     this.setState({sentiment:false});
     let ret = "";
     let url = ".";
+
+    let textinput = document.getElementById("textinput").value;
+    console.log("Sending sentiment: " + textinput);
+
     if(this.state.mode === "url") {
-      url = url+"/url/emotion?url="+document.getElementById("textinput").value;
+      url = url+"/url/emotion?url="+textinput;
     } else {
-      url = url+"/text/emotion/?text="+document.getElementById("textinput").value;
+      url = url+"/text/emotion/?text="+textinput;
     }
     ret = axios.get(url);
 
     ret.then((response)=>{
+      console.log("Received emotion: " + JSON.stringify(response.data));
       this.setState({sentimentOutput:<EmotionTable emotions={response.data}/>});
   });
   }
