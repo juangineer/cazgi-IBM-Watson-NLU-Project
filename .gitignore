@@ -1,5 +1,4 @@
 # Byte-compiled / optimized / DLL files
-
 .vscode
 
 __pycache__/
@@ -29,6 +28,7 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+node_modules
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -53,6 +53,7 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
+.eslintcache
 
 # Translations
 *.mo
