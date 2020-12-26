@@ -11,6 +11,10 @@ class App extends React.Component {
           sentiment:true
         }
   
+  componentDidMount() {
+    document.title = 'Sentiment Analyzer';
+  }
+
   renderTextArea = ()=>{
     document.getElementById("textinput").value = "";
     if(this.state.mode === "url") {
